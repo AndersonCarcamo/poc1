@@ -1,0 +1,86 @@
+/* Estilo general */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  /* Contenedor */
+  .container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 320px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Formularios */
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  /* Títulos */
+  h2 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 24px;
+  }
+  
+  /* Campos de entrada */
+  input {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+  
+  input:focus {
+    border-color: #4CAF50;
+  }
+  
+  /* Botón */
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Texto de alternar entre formularios */
+  p {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  span {
+    color: #4CAF50;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+  }
+  
+  span:hover {
+    color: #45a049;
+  }
+  
