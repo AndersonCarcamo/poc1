@@ -1,75 +1,25 @@
 const express = require('express');
+
+=======
 const { Pool } = require('pg');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-require('dotenv').config();
+// Rutas
+app.use('/compras', compraRoutes);
 
-const app = express();
-app.use(express.json());
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'API de Productos',
-      description: 'API para gestionar productos y categorías',
-      version: '1.0.0',
-      contact: {
-        name: 'API Support',
-        email: 'support@example.com',
-      },
-      servers: [{
-        url: 'http://localhost:3000',
-        description: 'Servidor de desarrollo',
-      }],
-    },
-  },
-  apis: ['./server.js'],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+// Manejador de rutas no encontradas
+app.all('*', (req, res, next) => {
+  next(new AppError(`No se puede encontrar ${req.originalUrl} en este servidor`, 404));
 });
 
-/**
- * @swagger
- * /test:
- *   get:
- *     summary: Prueba la conexión a la base de datos
- *     tags: [Test]
- *     responses:
- *       200:
- *         description: Conexión exitosa
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                 timestamp:
- *                   type: string
- *       500:
- *         description: Error en el servidor
- */
-app.get('/test', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ 
-      status: 'Conexión local exitosa', 
-      timestamp: result.rows[0].now 
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+// Manejador global de errores
+app.use(globalErrorHandler);
+
+// Iniciar servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+
 
 /**
  * @swagger
@@ -587,5 +537,5 @@ app.delete('/products/:id', async (req, res) => {
 const PORT = 3000;
 app.listen(PORT, 'localhost', () => {
   console.log(`Servidor corriendo localmente en puerto ${PORT}`);
-  console.log(`Documentación Swagger disponible en: http://localhost:${PORT}/api-docs`);
+
 });
