@@ -1,4 +1,7 @@
 const express = require("express");
+
+const cors = require("cors");
+
 const { Pool } = require("pg");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -6,8 +9,22 @@ const compraRoutes = require("./src/routes/compraRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const { AppError, globalErrorHandler } = require("./src/utils/errorHandler");
 
+
+const connectDB = require("./config/db"); // Para MongoDB
+const authRoutes = require("./routes/auth");
+
 const app = express();
+const PORT = process.env.PORT || 3000;
+// Conectar a MongoDB
+connectDB();
+
 app.use(express.json());
+
+// cors
+app.use(cors({
+  origin: "http://127.0.0.1:8080",
+  credentials: true
+}));
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -193,6 +210,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/compras", compraRoutes); 
 app.use("/products", productRoutes);
 
+app.use('/api/auth', authRoutes);
+
 app.all("*", (req, res, next) => {
   next(
     new AppError(
@@ -204,7 +223,6 @@ app.all("*", (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-const PORT = 3000;
 app.listen(PORT, "localhost", () => {
   console.log(`Servidor corriendo localmente en puerto ${PORT}`);
   console.log(`Documentación Swagger disponible en: http://localhost:${PORT}/api-docs`);
