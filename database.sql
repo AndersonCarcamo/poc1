@@ -17,18 +17,6 @@ CREATE TABLE producto (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE promocion (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    descripcion TEXT NOT NULL,
-    image_id UUID NOT NULL,
-    extension VARCHAR(10),
-    fecha_inicio TIMESTAMP NOT NULL,
-    fecha_fin TIMESTAMP,
-    descuento DECIMAL(5, 2) CHECK (descuento > 0 AND descuento <= 100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE usuario (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -111,14 +99,6 @@ CREATE TABLE boleta (
     UNIQUE (serie, correlativo)
 );
 
--- Tabla promocion_producto (tabla intermedia entre promocion y producto)
-CREATE TABLE promocion_producto (
-    promocion_id UUID REFERENCES promocion(id),
-    producto_id UUID REFERENCES producto(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (promocion_id, producto_id)
-);
-
 -- Triggers para actualizar el campo updated_at automáticamente
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
@@ -135,10 +115,6 @@ FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 
 CREATE TRIGGER update_categoria_modtime
 BEFORE UPDATE ON categoria
-FOR EACH ROW EXECUTE FUNCTION update_modified_column();
-
-CREATE TRIGGER update_promocion_modtime
-BEFORE UPDATE ON promocion
 FOR EACH ROW EXECUTE FUNCTION update_modified_column();
 
 CREATE TRIGGER update_usuario_modtime
