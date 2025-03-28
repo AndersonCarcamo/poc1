@@ -10,26 +10,182 @@ const app = express();
 app.use(express.json());
 
 const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "API de Productos",
-      description: "API para gestionar productos y categorías",
-      version: "1.0.0",
-      contact: {
-        name: "API Support",
-        email: "support@example.com",
-      },
-      servers: [
-        {
-          url: "http://localhost:3000",
-          description: "Servidor de desarrollo",
+    swaggerDefinition: {
+      openapi: "3.0.0",
+      info: {
+        title: "API de Farmacia",
+        description: "API para gestión de compras y productos",
+        version: "1.0.0",
+        contact: {
+          name: "Soporte Técnico",
+          email: "soporte@mfarma.com",
         },
-      ],
+        servers: [
+          {
+            url: "http://localhost:3000",
+            description: "Servidor de desarrollo",
+          },
+        ],
+      },
+      components: {
+        schemas: {
+          Compra: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+                format: "uuid"
+              },
+              usuario_id: {
+                type: "string",
+                format: "uuid"
+              },
+              metodo_pago: {
+                type: "string"
+              },
+              total_price: {
+                type: "number",
+                format: "decimal"
+              },
+              fecha_compra: {
+                type: "string",
+                format: "date-time"
+              },
+              estado: {
+                type: "string"
+              }
+            }
+          },
+          CompraDetalle: {
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+                format: "uuid"
+              },
+              usuario_id: {
+                type: "string",
+                format: "uuid"
+              },
+              nombre_usuario: {
+                type: "string"
+              },
+              email_usuario: {
+                type: "string",
+                format: "email"
+              },
+              metodo_pago: {
+                type: "string"
+              },
+              total_price: {
+                type: "number",
+                format: "decimal"
+              },
+              fecha_compra: {
+                type: "string",
+                format: "date-time"
+              },
+              estado: {
+                type: "string"
+              }
+            }
+          },
+          ProductoCompra: {
+            type: "object",
+            properties: {
+              producto_id: {
+                type: "string",
+                format: "uuid"
+              },
+              nombre_producto: {
+                type: "string"
+              },
+              cantidad: {
+                type: "integer"
+              },
+              precio_unitario: {
+                type: "number",
+                format: "decimal"
+              },
+              subtotal: {
+                type: "number",
+                format: "decimal"
+              }
+            }
+          }
+        },
+        responses: {
+          BadRequest: {
+            description: "Parámetros inválidos",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "string"
+                    },
+                    message: {
+                      type: "string"
+                    }
+                  },
+                  example: {
+                    status: "fail",
+                    message: "Error de validación"
+                  }
+                }
+              }
+            }
+          },
+          NotFound: {
+            description: "Recurso no encontrado",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "string"
+                    },
+                    message: {
+                      type: "string"
+                    }
+                  },
+                  example: {
+                    status: "fail",
+                    message: "Compra no encontrada"
+                  }
+                }
+              }
+            }
+          },
+          ServerError: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "string"
+                    },
+                    message: {
+                      type: "string"
+                    }
+                  },
+                  example: {
+                    status: "error",
+                    message: "Error interno del servidor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
-  },
-  apis: ["./server.js", "./src/routes/*.js"], 
-};
+    apis: ["./server.js", "./src/routes/*.js"],
+  };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
